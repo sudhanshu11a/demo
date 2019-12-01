@@ -36,7 +36,7 @@ public class OrganizationController {
 	private OrganizationService organizationService;
 
 	@GetMapping("/name/{orgId}")
-	public ResponseEntity<?> getOrganizationName(@PathVariable long orgId) {
+	public ResponseEntity<?> getOrganizationName(@PathVariable String orgId) {
 		return organizationService.findById(orgId).map(organization -> {
 			try {
 				return ResponseEntity.ok().location(new URI("/name/" + orgId)).body(organization);
@@ -79,7 +79,7 @@ public class OrganizationController {
 	 * @return
 	 */
 	@PutMapping("/organization/{id}")
-	public ResponseEntity<?> updateOrganization(@RequestBody OrganizationDTO newOrganization, @PathVariable Long id) {
+	public ResponseEntity<?> updateOrganization(@RequestBody OrganizationDTO newOrganization, @PathVariable String id) {
 		logger.info("Organization ID {} is updating.", id);
 
 		Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
@@ -107,14 +107,14 @@ public class OrganizationController {
 	 * 					500 Internal Server Error if the error occurs during deletion
 	 */
 	@DeleteMapping("/organization/{id}")
-	public ResponseEntity<?> deleteOrganization(@PathVariable Long id){
+	public ResponseEntity<?> deleteOrganization(@PathVariable String id){
 		logger.info("Deleting the organization with ID : {} ", id);
 		
 		//Get the existing Organization 
 		Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
 		
 		return existingOrganization.map(org -> {
-			if(organizationService.delete(1l)) {
+			if(organizationService.delete(org.getId())) {
 				return ResponseEntity.ok().build();
 			}else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

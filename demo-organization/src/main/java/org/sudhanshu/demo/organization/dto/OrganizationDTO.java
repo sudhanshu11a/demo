@@ -24,8 +24,8 @@ public class OrganizationDTO extends BaseDTO {
 	 * @param modifiedDate
 	 * @param name
 	 */
-	public OrganizationDTO(Date createdDate, Date modifiedDate, String name) {
-		super(createdDate, modifiedDate);
+	public OrganizationDTO(String id, Date createdDate, Date modifiedDate, String name) {
+		super(id, createdDate, modifiedDate);
 		this.name = name;
 	}
 

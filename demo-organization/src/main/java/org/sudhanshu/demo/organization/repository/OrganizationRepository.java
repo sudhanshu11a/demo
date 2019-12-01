@@ -15,6 +15,6 @@ import org.sudhanshu.demo.organization.entity.Organization;
  *
  */
 @Repository
-public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+public interface OrganizationRepository extends JpaRepository<Organization, String> {
 
 }

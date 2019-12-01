@@ -25,7 +25,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 	OrganizationRepository organizationRepository;
 
 	@Override
-	public Optional<OrganizationDTO> findById(Long id) {
+	public Optional<OrganizationDTO> findById(String id) {
 		Optional<Organization> organization = organizationRepository.findById(id);
 		return ObjectMapperUtils.map(organization, OrganizationDTO.class);
 	}
@@ -58,7 +58,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 	}
 
 	@Override
-	public boolean delete(Long organizationId) {
+	public boolean delete(String organizationId) {
 		// TODO Auto-generated method stub
 		return false;
 	}

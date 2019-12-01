@@ -29,7 +29,7 @@ public class Organization extends BaseEntity {
 	 * @param modifiedBy
 	 * @param active
 	 */
-	public Organization(Long id, String name, Long createdBy, Date createdDate, Long modifiedBy,
+	public Organization(String id, String name, Long createdBy, Date createdDate, Long modifiedBy,
 			Date modifiedDate, Boolean active) {
 		super(id, createdBy, createdDate, modifiedBy, modifiedDate, active);
 		this.name = name;

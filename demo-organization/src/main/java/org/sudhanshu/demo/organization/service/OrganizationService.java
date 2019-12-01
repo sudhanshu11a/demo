@@ -20,7 +20,7 @@ public interface OrganizationService {
 	 * @param organizationId	ID of the organization to be retrieve 
 	 * @return					The required organization if found
 	 */
-	Optional<OrganizationDTO> findById(Long organizationId);
+	Optional<OrganizationDTO> findById(String organizationId);
 
 	/**
 	 * Returns all the organization in the database
@@ -51,6 +51,6 @@ public interface OrganizationService {
 	 * @param organizationId	The organization to be deleted
 	 * @return					True if the deletion is succeeded, else false
 	 */
-	boolean delete(Long organizationId);
+	boolean delete(String organizationId);
 
 }

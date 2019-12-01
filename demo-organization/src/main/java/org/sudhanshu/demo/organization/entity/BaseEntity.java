@@ -4,6 +4,7 @@
 package org.sudhanshu.demo.organization.entity;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -32,8 +34,15 @@ public abstract class BaseEntity {
 
 	/** The id. */
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+//	@GeneratedValue(generator = "UUID")
+//	@GenericGenerator( name = "UUID",
+//		strategy = "org.hibernate.id.UUIDGenerator"
+//	)
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid",
+	  strategy = "uuid")
+	//@GeneratedValue(strategy = GenerationType.AUTO)
+	private UUID id;
 
 	/** The created by. */
 	@Column(name = "created_by", nullable = false)
@@ -66,9 +75,9 @@ public abstract class BaseEntity {
 	 * @param modifiedDate
 	 * @param active
 	 */
-	public BaseEntity(Long id, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Boolean active) {
+	public BaseEntity(String id, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Boolean active) {
 		super();
-		this.id = id;
+		this.id = UUID.fromString(id);
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 		this.modifiedBy = modifiedBy;
@@ -79,15 +88,15 @@ public abstract class BaseEntity {
 	/**
 	 * @return the id
 	 */
-	public Long getId() {
-		return id;
+	public String getId() {
+		return id.toString();
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(String id) {
+		this.id = UUID.fromString(id);
 	}
 
 	public Long getCreatedBy() {
