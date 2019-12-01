@@ -3,6 +3,7 @@
  */
 package org.sudhanshu.demo.organization.rest;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -14,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +33,6 @@ import org.sudhanshu.demo.organization.service.OrganizationService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
-import com.sun.jersey.api.client.ClientResponse.Status;
 
 /**
  * @author Sudhanshu Sharma
@@ -60,9 +61,7 @@ class OrganizationControllerTest {
 	void testGetOrganizationByNameFound() throws Exception {
 
 		// Setup our mocked service
-		OrganizationDTO mockOrganization = new OrganizationDTO();
-		mockOrganization.setName("Suranshu");
-
+		OrganizationDTO mockOrganization = new OrganizationDTO(new Date(), new Date(), "Suranshu");
 		doReturn(Optional.of(mockOrganization)).when(service).findById(1l);
 
 		// Execute the GET Request
@@ -81,7 +80,6 @@ class OrganizationControllerTest {
 	void testGetOranizationByNameNotFound() throws Exception {
 		// Setup our mocked service
 		doReturn(Optional.empty()).when(service).findById(1l);
-
 		// Execute the GET request
 		mockMvc.perform(get("/name/{id}", 1))
 				// Validate that we get a 404 Not Found response
@@ -93,9 +91,9 @@ class OrganizationControllerTest {
 	@DisplayName("POST /organization - Success")
 	void testCreateOrganizationSuccess() throws Exception {
 		// Setup mocked service
-		OrganizationDTO postOrganization = new OrganizationDTO("Test Post");
-		OrganizationDTO mockOrganization = new OrganizationDTO("Test Post");
-		doReturn(mockOrganization).when(service).save(postOrganization);
+		OrganizationDTO postOrganization = new OrganizationDTO(new Date(), new Date(), "TestPost");
+		OrganizationDTO mockOrganization = new OrganizationDTO(new Date(), new Date(), "TestPost");
+		doReturn(mockOrganization).when(service).save(any());
 
 		// Execute the POST request
 		mockMvc.perform(
@@ -103,7 +101,7 @@ class OrganizationControllerTest {
 				// Validate the response code and content type
 				.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				// Validate the returned field
-				.andExpect(jsonPath("$.name", is("Test Post")));
+				.andExpect(jsonPath("$.name", is("TestPost")));
 
 	}
 
@@ -111,10 +109,10 @@ class OrganizationControllerTest {
 	@DisplayName("PUT /organization/1 - Success")
 	void testUpdateOrganizationSuccess() throws Exception {
 		// Setup mocked service
-		OrganizationDTO updateOrganization = new OrganizationDTO("Test Put");
-		OrganizationDTO mockOrganization = new OrganizationDTO("Test Put");
+		OrganizationDTO updateOrganization = new OrganizationDTO(new Date(), new Date(), "TestPut");
+		OrganizationDTO mockOrganization = new OrganizationDTO(new Date(), new Date(), "TestPut");
 		doReturn(Optional.of(mockOrganization)).when(service).findById(1l);
-		doReturn(true).when(service).update(updateOrganization);
+		doReturn(true).when(service).update(any());
 
 		// Execute the POST request
 		mockMvc.perform(put("/organization/{id}", 1l).contentType(MediaType.APPLICATION_JSON)
@@ -122,13 +120,14 @@ class OrganizationControllerTest {
 				// Validate the response code and content type
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				// Validate the returned field
-				.andExpect(jsonPath("$.name", is("Test Put")));
+				.andExpect(jsonPath("$.name", is("TestPut")));
 	}
 
+	
 	@Test
 	@DisplayName("DELETE /organization/1 - Success")
 	void testDeleteOrganizationSuccess() throws Exception {
-		OrganizationDTO mockDTO = new OrganizationDTO("Delete Organization");
+		OrganizationDTO mockDTO = new OrganizationDTO(new Date(), new Date(), "Sudhanshu");
 
 		doReturn(Optional.of(mockDTO)).when(service).findById(1l);
 		doReturn(true).when(service).delete(1l);

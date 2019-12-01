@@ -3,23 +3,29 @@
  */
 package org.sudhanshu.demo.organization.dto;
 
+import java.util.Date;
+
 /**
  * @author Sudhanshu Sharma
  *
  */
-public class OrganizationDTO {
-
-	private String name;
-
-	public OrganizationDTO() {
-		// TODO Auto-generated constructor stub
-	}
+public class OrganizationDTO extends BaseDTO {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String name;
+
+	
+
+	/**
+	 * @param createdDate
+	 * @param modifiedDate
 	 * @param name
 	 */
-	public OrganizationDTO(String name) {
-		super();
+	public OrganizationDTO(Date createdDate, Date modifiedDate, String name) {
+		super(createdDate, modifiedDate);
 		this.name = name;
 	}
 

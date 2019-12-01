@@ -72,6 +72,12 @@ public class OrganizationController {
 
 	}
 
+	/**
+	 * 
+	 * @param newOrganization
+	 * @param id
+	 * @return
+	 */
 	@PutMapping("/organization/{id}")
 	public ResponseEntity<?> updateOrganization(@RequestBody OrganizationDTO newOrganization, @PathVariable Long id) {
 		logger.info("Organization ID {} is updating.", id);
@@ -91,12 +97,29 @@ public class OrganizationController {
 		}).orElse(ResponseEntity.notFound().build());
 	}
 	
-//	@DeleteMapping("/organization/{id}")
-//	public ResponseEntity<?> deleteOrganization(@PathVariable Long id){
-//		
-//		
-//		
-//		return null;
-//	}
+	/**
+	 * Delete the organization with the specified ID.
+	 * 
+	 * @param id		The Id of the organization to delete
+	 * @return			A responseEntity with one of the following status code:
+	 * 					200 OK if the delete was successful 
+	 * 					404 Not Found if the the organization with the specified Id not found
+	 * 					500 Internal Server Error if the error occurs during deletion
+	 */
+	@DeleteMapping("/organization/{id}")
+	public ResponseEntity<?> deleteOrganization(@PathVariable Long id){
+		logger.info("Deleting the organization with ID : {} ", id);
+		
+		//Get the existing Organization 
+		Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
+		
+		return existingOrganization.map(org -> {
+			if(organizationService.delete(1l)) {
+				return ResponseEntity.ok().build();
+			}else {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			}
+		}).orElse(ResponseEntity.notFound().build());
+	}
 
 }

@@ -3,13 +3,16 @@
  */
 package org.sudhanshu.demo.organization.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sudhanshu.demo.organization.dto.OrganizationDTO;
+import org.sudhanshu.demo.organization.entity.Organization;
+import org.sudhanshu.demo.organization.repository.OrganizationRepository;
 import org.sudhanshu.demo.organization.service.OrganizationService;
+import org.sudhanshu.demo.organization.utils.ObjectMapperUtils;
 
 /**
  * @author Sudhanshu Sharma
@@ -18,37 +21,40 @@ import org.sudhanshu.demo.organization.service.OrganizationService;
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
+	@Autowired
+	OrganizationRepository organizationRepository;
+
 	@Override
-	public Optional<OrganizationDTO> findById(Long organizationId) {
-		OrganizationDTO organizationDTO = new OrganizationDTO();
-		organizationDTO.setName("Suranshu");
-		return Optional.of(organizationDTO);
+	public Optional<OrganizationDTO> findById(Long id) {
+		Optional<Organization> organization = organizationRepository.findById(id);
+		return ObjectMapperUtils.map(organization, OrganizationDTO.class);
 	}
 
 	@Override
 	public List<OrganizationDTO> findAll() {
-		OrganizationDTO organizationDTO1 = new OrganizationDTO();
-		organizationDTO1.setName("Suranshu");
-		OrganizationDTO organizationDTO2 = new OrganizationDTO();
-		organizationDTO2.setName("Himanshu");
-
-		List<OrganizationDTO> organizations = new ArrayList<>();
-		organizations.add(organizationDTO1);
-		organizations.add(organizationDTO2);
-
-		return organizations;
+		List<Organization> organizations = organizationRepository.findAll();
+		return ObjectMapperUtils.mapAll(organizations, OrganizationDTO.class);
 	}
 
 	@Override
-	public OrganizationDTO save(OrganizationDTO organization) {
-		// TODO Auto-generated method stub
-		return null;
+	public OrganizationDTO save(OrganizationDTO dto) {
+		Optional<Organization> organization = ObjectMapperUtils.map(dto, Organization.class);
+		Optional<OrganizationDTO> organizationDTO = Optional.empty();
+		if(organization.isPresent()) {
+			Organization entity = organization.get();
+			entity.setActive(true);
+			entity.setCreatedBy(1l);
+			entity = organizationRepository.saveAndFlush(entity);
+			organizationDTO = ObjectMapperUtils.map(entity, OrganizationDTO.class);
+		}
+		return organizationDTO.isPresent()?organizationDTO.get():null;
 	}
 
 	@Override
 	public boolean update(OrganizationDTO organization) {
-		// TODO Auto-generated method stub
-		return false;
+		//OrganizationDTO organizationDTO1 = new OrganizationDTO();
+		//organizationDTO1.setName("Suranshu");
+		return true;
 	}
 
 	@Override
