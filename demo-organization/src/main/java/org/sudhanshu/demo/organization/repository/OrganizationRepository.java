@@ -3,6 +3,8 @@
  */
 package org.sudhanshu.demo.organization.repository;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.sudhanshu.demo.organization.entity.Organization;
@@ -15,6 +17,6 @@ import org.sudhanshu.demo.organization.entity.Organization;
  *
  */
 @Repository
-public interface OrganizationRepository extends JpaRepository<Organization, String> {
+public interface OrganizationRepository extends JpaRepository<Organization, UUID> {
 
 }

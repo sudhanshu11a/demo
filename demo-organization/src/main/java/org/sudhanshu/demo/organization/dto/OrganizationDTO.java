@@ -15,32 +15,54 @@ public class OrganizationDTO extends BaseDTO {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String name;
+	private String orgName;
+	private String displayName;
 
 	
+
+	public OrganizationDTO() {
+		super();
+	}
 
 	/**
 	 * @param createdDate
 	 * @param modifiedDate
 	 * @param name
 	 */
-	public OrganizationDTO(String id, Date createdDate, Date modifiedDate, String name) {
+	public OrganizationDTO(String id, Date createdDate, Date modifiedDate, String name, String displayName) {
 		super(id, createdDate, modifiedDate);
-		this.name = name;
+		this.orgName = name;
+		this.displayName = displayName;
+	}
+	
+	/**
+	 * @return the orgName
+	 */
+	public String getOrgName() {
+		return orgName;
 	}
 
 	/**
-	 * @return the name
+	 * @param orgName the orgName to set
 	 */
-	public String getName() {
-		return name;
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @return the displayName
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public String getDisplayName() {
+		return displayName;
 	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+	
+	
 
 }

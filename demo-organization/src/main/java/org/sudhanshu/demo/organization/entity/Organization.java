@@ -18,8 +18,15 @@ import javax.persistence.Table;
 public class Organization extends BaseEntity {
 
 	@Column(name = "name", nullable = false)
-	private String name;
+	private String orgName;
+	
+	@Column(name = "dispayname")
+	private String displayName;
 
+	public Organization() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	/**
 	 * @param id
 	 * @param organizationName
@@ -29,17 +36,40 @@ public class Organization extends BaseEntity {
 	 * @param modifiedBy
 	 * @param active
 	 */
-	public Organization(String id, String name, Long createdBy, Date createdDate, Long modifiedBy,
+	public Organization(String id, String name, String displayName, Long createdBy, Date createdDate, Long modifiedBy,
 			Date modifiedDate, Boolean active) {
 		super(id, createdBy, createdDate, modifiedBy, modifiedDate, active);
-		this.name = name;
+		this.orgName = name;
+		this.displayName = displayName;
 	}
 
-	public String geName() {
-		return name;
+	/**
+	 * @return the orgName
+	 */
+	public String getOrgName() {
+		return orgName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	/**
+	 * @param orgName the orgName to set
+	 */
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
+
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+	
+	
 }

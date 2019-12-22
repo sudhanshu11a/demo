@@ -54,7 +54,7 @@ public class OrganizationControllerTest1 implements GetResourceEndpointTest<Orga
  
     @Override
     public OrganizationDTO foundResource() {
-        return new OrganizationDTO("id", new Date(), new Date(), "NewOrg");
+        return new OrganizationDTO("id", new Date(), new Date(), "NewOrg", "S");
     }
  
     @Override

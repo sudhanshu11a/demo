@@ -26,6 +26,11 @@ public class BaseDTO implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date modifiedDate;
 
+	
+	public BaseDTO() {
+		super();
+	}
+	
 	/**
 	 * @param createdDate
 	 * @param modifiedDate

@@ -5,6 +5,7 @@ package org.sudhanshu.demo.organization.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,15 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	@Override
 	public Optional<OrganizationDTO> findById(String id) {
-		Optional<Organization> organization = organizationRepository.findById(id);
-		return ObjectMapperUtils.map(organization, OrganizationDTO.class);
+		Optional<OrganizationDTO> dto= Optional.empty();
+		
+		Optional<Organization> organization = organizationRepository.findById(UUID.fromString(id));
+		
+		if (organization.isPresent()) {
+			return ObjectMapperUtils.map(organization.get(), OrganizationDTO.class);
+		} 
+		
+		return dto;
 	}
 
 	@Override
@@ -38,6 +46,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	@Override
 	public OrganizationDTO save(OrganizationDTO dto) {
+		dto.setId(null);
 		Optional<Organization> organization = ObjectMapperUtils.map(dto, Organization.class);
 		Optional<OrganizationDTO> organizationDTO = Optional.empty();
 		if(organization.isPresent()) {

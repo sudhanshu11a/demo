@@ -61,7 +61,7 @@ class OrganizationControllerTest {
 	void testGetOrganizationByNameFound() throws Exception {
 
 		// Setup our mocked service
-		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "Suranshu");
+		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "Suranshu", "S");
 		doReturn(Optional.of(mockOrganization)).when(service).findById("id");
 
 		// Execute the GET Request
@@ -91,8 +91,8 @@ class OrganizationControllerTest {
 	@DisplayName("POST /organization - Success")
 	void testCreateOrganizationSuccess() throws Exception {
 		// Setup mocked service
-		OrganizationDTO postOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPost");
-		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPost");
+		OrganizationDTO postOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPost", "S");
+		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPost", "S");
 		doReturn(mockOrganization).when(service).save(any());
 
 		// Execute the POST request
@@ -109,8 +109,8 @@ class OrganizationControllerTest {
 	@DisplayName("PUT /organization/1 - Success")
 	void testUpdateOrganizationSuccess() throws Exception {
 		// Setup mocked service
-		OrganizationDTO updateOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPut");
-		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPut");
+		OrganizationDTO updateOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPut", "S");
+		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPut", "S");
 		doReturn(Optional.of(mockOrganization)).when(service).findById("id");
 		doReturn(true).when(service).update(any());
 
@@ -127,7 +127,7 @@ class OrganizationControllerTest {
 	@Test
 	@DisplayName("DELETE /organization/1 - Success")
 	void testDeleteOrganizationSuccess() throws Exception {
-		OrganizationDTO mockDTO = new OrganizationDTO("id", new Date(), new Date(), "Sudhanshu");
+		OrganizationDTO mockDTO = new OrganizationDTO("id", new Date(), new Date(), "Sudhanshu", "S");
 
 		doReturn(Optional.of(mockDTO)).when(service).findById("id");
 		doReturn(true).when(service).delete("id");

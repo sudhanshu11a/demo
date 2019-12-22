@@ -9,7 +9,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
@@ -18,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -34,14 +34,13 @@ public abstract class BaseEntity {
 
 	/** The id. */
 	@Id
-//	@GeneratedValue(generator = "UUID")
-//	@GenericGenerator( name = "UUID",
-//		strategy = "org.hibernate.id.UUIDGenerator"
-//	)
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid",
-	  strategy = "uuid")
-	//@GeneratedValue(strategy = GenerationType.AUTO)
+	//@Type(type="org.hibernate.type.UUIDCharType")
+	@GeneratedValue(generator = "UUID")
+	@GenericGenerator(
+		name = "UUID",
+		strategy = "org.hibernate.id.UUIDGenerator"
+	)
+	@Column(name = "id", columnDefinition = "BINARY(16)", updatable = false, nullable = false)
 	private UUID id;
 
 	/** The created by. */
@@ -66,6 +65,10 @@ public abstract class BaseEntity {
 
 	@Column(name = "is_active", nullable = false)
 	private Boolean active;
+	
+	public BaseEntity() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @param id
@@ -89,14 +92,14 @@ public abstract class BaseEntity {
 	 * @return the id
 	 */
 	public String getId() {
-		return id.toString();
+		return this.id==null?null:this.id.toString();
 	}
 
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(String id) {
-		this.id = UUID.fromString(id);
+		this.id = id==null?null:UUID.fromString(id);
 	}
 
 	public Long getCreatedBy() {

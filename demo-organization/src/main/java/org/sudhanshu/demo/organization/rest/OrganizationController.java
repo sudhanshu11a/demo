@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.sudhanshu.demo.organization.dto.OrganizationDTO;
 import org.sudhanshu.demo.organization.service.OrganizationService;
@@ -28,6 +29,7 @@ import org.sudhanshu.demo.organization.service.OrganizationService;
  *
  */
 @RestController
+@RequestMapping(path = "/orgs")
 public class OrganizationController {
 
 	static final Logger logger = LoggerFactory.getLogger(OrganizationController.class);
@@ -35,37 +37,37 @@ public class OrganizationController {
 	@Autowired
 	private OrganizationService organizationService;
 
-	@GetMapping("/name/{orgId}")
+	@GetMapping("/{orgId}")
 	public ResponseEntity<?> getOrganizationName(@PathVariable String orgId) {
 		return organizationService.findById(orgId).map(organization -> {
 			try {
-				return ResponseEntity.ok().location(new URI("/name/" + orgId)).body(organization);
+				return ResponseEntity.ok().location(new URI("/orgs/" + orgId)).body(organization);
 			} catch (URISyntaxException e) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			}
 		}).orElse(ResponseEntity.notFound().build());
 	}
 
-	@GetMapping("/name")
+	@GetMapping()
 	public ResponseEntity<?> getAllOrganizationName() {
 		List<OrganizationDTO> organizations =  organizationService.findAll();
 		
 		try {
-			return ResponseEntity.ok().location(new URI("/name")).body(organizations);
+			return ResponseEntity.ok().location(new URI("/orgs")).body(organizations);
 		} catch (URISyntaxException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 	
-	@PostMapping("/organization")
+	@PostMapping()
 	public ResponseEntity<OrganizationDTO> saveOrganization(@RequestBody OrganizationDTO organization) {
-		logger.info("Creating new Organization with name {} ", organization.getName());
+		logger.info("Creating new Organization with name {} ", organization.getOrgName());
 
 		// Create the new Organization
 		OrganizationDTO newOrganization = organizationService.save(organization);
 
 		try {
-			return ResponseEntity.created(new URI("/organization/" + newOrganization.getName())).body(newOrganization);
+			return ResponseEntity.created(new URI("/organization/" + newOrganization.getOrgName())).body(newOrganization);
 		} catch (URISyntaxException e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
@@ -73,12 +75,13 @@ public class OrganizationController {
 	}
 
 	/**
+	 * Update the organization with the specified ID
 	 * 
-	 * @param newOrganization
-	 * @param id
+	 * @param newOrganization		Organization details  
+	 * @param id					organization ID
 	 * @return
 	 */
-	@PutMapping("/organization/{id}")
+	@PutMapping("{id}")
 	public ResponseEntity<?> updateOrganization(@RequestBody OrganizationDTO newOrganization, @PathVariable String id) {
 		logger.info("Organization ID {} is updating.", id);
 
@@ -86,7 +89,7 @@ public class OrganizationController {
 
 		return existingOrganization.map(o -> {
 			logger.info("Organization ID {} exists", id);
-			o.setName(newOrganization.getName());
+			o.setOrgName(newOrganization.getOrgName());
 
 			if (organizationService.update(o)) {
 				//update the organization and return a OK response
@@ -106,7 +109,7 @@ public class OrganizationController {
 	 * 					404 Not Found if the the organization with the specified Id not found
 	 * 					500 Internal Server Error if the error occurs during deletion
 	 */
-	@DeleteMapping("/organization/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<?> deleteOrganization(@PathVariable String id){
 		logger.info("Deleting the organization with ID : {} ", id);
 		

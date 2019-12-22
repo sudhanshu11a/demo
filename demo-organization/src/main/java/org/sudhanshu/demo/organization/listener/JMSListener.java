@@ -19,7 +19,7 @@ public class JMSListener {
 	public static final Logger logger =  LoggerFactory.getLogger(JMSListener.class);
 	
 	
-	@JmsListener(destination = "Order")
+	//@JmsListener(destination = "Order")
 	public String recievedMassage(final Message jsonMessage) {
 		logger.info("Received message : " + jsonMessage);
 		return "recievedMassage";
