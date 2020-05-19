@@ -16,7 +16,7 @@ public class BaseDTO implements Serializable {
 
 	private static final long serialVersionUID = 8002080636214707471L;
 
-	private String id;
+	private String uuid;
 
 	/** The created date. */
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -37,23 +37,24 @@ public class BaseDTO implements Serializable {
 	 */
 	public BaseDTO(String id, Date createdDate, Date modifiedDate) {
 		super();
-		this.id = id;
+		this.uuid = id;
 		this.createdDate = createdDate;
 		this.modifiedDate = modifiedDate;
 	}
 
+
 	/**
-	 * @return the id
+	 * @return the uuid
 	 */
-	public String getId() {
-		return id;
+	public String getUuid() {
+		return uuid;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param uuid the uuid to set
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	/**

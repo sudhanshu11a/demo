@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
@@ -17,7 +18,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -31,17 +31,14 @@ import org.springframework.data.annotation.LastModifiedDate;
  */
 @MappedSuperclass
 public abstract class BaseEntity {
-
+	
 	/** The id. */
 	@Id
-	//@Type(type="org.hibernate.type.UUIDCharType")
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(
-		name = "UUID",
-		strategy = "org.hibernate.id.UUIDGenerator"
-	)
-	@Column(name = "id", columnDefinition = "BINARY(16)", updatable = false, nullable = false)
-	private UUID id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	protected Long id;
+	
+	@Column(name = "uuid", unique = true, updatable = false, nullable = false)
+	private UUID uuid;
 
 	/** The created by. */
 	@Column(name = "created_by", nullable = false)
@@ -80,27 +77,29 @@ public abstract class BaseEntity {
 	 */
 	public BaseEntity(String id, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Boolean active) {
 		super();
-		this.id = UUID.fromString(id);
+		this.uuid = UUID.fromString(id);
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 		this.modifiedBy = modifiedBy;
 		this.modifiedDate = modifiedDate;
 		this.active = active;
 	}
+	
+	
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return this.id==null?null:this.id.toString();
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id==null?null:UUID.fromString(id);
-	}
+//	/**
+//	 * @return the id
+//	 */
+//	public String getId() {
+//		return this.id==null?null:this.id.toString();
+//	}
+//
+//	/**
+//	 * @param id the id to set
+//	 */
+//	public void setId(String id) {
+//		this.id = id==null?null:UUID.fromString(id);
+//	}
 
 	public Long getCreatedBy() {
 		return createdBy;
@@ -162,6 +161,7 @@ public abstract class BaseEntity {
 
 	@PrePersist
 	public void prePersist() {
+		this.uuid = UUID.randomUUID();
 		this.createdDate = new Date();
 		this.active = true;
 		this.modifiedDate = null;

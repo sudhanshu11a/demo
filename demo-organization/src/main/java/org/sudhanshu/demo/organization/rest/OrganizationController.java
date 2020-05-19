@@ -117,7 +117,7 @@ public class OrganizationController {
 		Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
 		
 		return existingOrganization.map(org -> {
-			if(organizationService.delete(org.getId())) {
+			if(organizationService.delete(org.getUuid())) {
 				return ResponseEntity.ok().build();
 			}else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

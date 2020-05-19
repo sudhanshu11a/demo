@@ -49,6 +49,8 @@ class OrganizationControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+	
+	private String mock_id = "8c6415f6-e39f-4d4d-9812-46fac05e14f7"; 
 
 	/**
 	 * Test method for
@@ -57,38 +59,38 @@ class OrganizationControllerTest {
 	 * @throws Exception
 	 */
 	@Test
-	@DisplayName("GET /name/1 - FOUND")
+	@DisplayName("GET /orgs/id - FOUND")
 	void testGetOrganizationByNameFound() throws Exception {
 
 		// Setup our mocked service
-		OrganizationDTO mockOrganization = new OrganizationDTO("id", new Date(), new Date(), "Suranshu", "S");
-		doReturn(Optional.of(mockOrganization)).when(service).findById("id");
+		OrganizationDTO mockOrganization = new OrganizationDTO(mock_id, new Date(), new Date(), "Suranshu", "S");
+		doReturn(Optional.of(mockOrganization)).when(service).findById(mock_id);
 
 		// Execute the GET Request
-		mockMvc.perform(get("/name/{id}", "id"))
+		mockMvc.perform(get("/orgs/{id}", mock_id))
 				// validate the response code and content type
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				// Validate the headers
-				.andExpect(header().string(HttpHeaders.LOCATION, "/name/id"))
+				.andExpect(header().string(HttpHeaders.LOCATION, "/orgs/"+mock_id))
 				// validate the returned fields
-				.andExpect(jsonPath("$.name", is("Suranshu")));
+				.andExpect(jsonPath("$.orgName", is("Suranshu")));
 
 	}
 
 	@Test
-	@DisplayName("GET /name/1 - Not Found")
+	@DisplayName("GET /orgs/id - Not Found")
 	void testGetOranizationByNameNotFound() throws Exception {
 		// Setup our mocked service
 		doReturn(Optional.empty()).when(service).findById("id");
 		// Execute the GET request
-		mockMvc.perform(get("/name/{id}", "id"))
+		mockMvc.perform(get("/orgs/{id}", "id"))
 				// Validate that we get a 404 Not Found response
 				.andExpect(status().isNotFound());
 
 	}
 
 	@Test
-	@DisplayName("POST /organization - Success")
+	@DisplayName("POST /orgs - Success")
 	void testCreateOrganizationSuccess() throws Exception {
 		// Setup mocked service
 		OrganizationDTO postOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPost", "S");
@@ -97,16 +99,16 @@ class OrganizationControllerTest {
 
 		// Execute the POST request
 		mockMvc.perform(
-				post("/organization").contentType(MediaType.APPLICATION_JSON).content(asJsonString(postOrganization)))
+				post("/orgs").contentType(MediaType.APPLICATION_JSON).content(asJsonString(postOrganization)))
 				// Validate the response code and content type
 				.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				// Validate the returned field
-				.andExpect(jsonPath("$.name", is("TestPost")));
+				.andExpect(jsonPath("$.orgName", is("TestPost")));
 
 	}
 
 	@Test
-	@DisplayName("PUT /organization/1 - Success")
+	@DisplayName("PUT /orgs/1 - Success")
 	void testUpdateOrganizationSuccess() throws Exception {
 		// Setup mocked service
 		OrganizationDTO updateOrganization = new OrganizationDTO("id", new Date(), new Date(), "TestPut", "S");
@@ -115,32 +117,32 @@ class OrganizationControllerTest {
 		doReturn(true).when(service).update(any());
 
 		// Execute the POST request
-		mockMvc.perform(put("/organization/{id}", "id").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(put("/orgs/{id}", "id").contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(updateOrganization)))
 				// Validate the response code and content type
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				// Validate the returned field
-				.andExpect(jsonPath("$.name", is("TestPut")));
+				.andExpect(jsonPath("$.orgName", is("TestPut")));
 	}
 
 	
 	@Test
-	@DisplayName("DELETE /organization/1 - Success")
+	@DisplayName("DELETE /orgs/1 - Success")
 	void testDeleteOrganizationSuccess() throws Exception {
 		OrganizationDTO mockDTO = new OrganizationDTO("id", new Date(), new Date(), "Sudhanshu", "S");
 
 		doReturn(Optional.of(mockDTO)).when(service).findById("id");
 		doReturn(true).when(service).delete("id");
 
-		mockMvc.perform(delete("/organization/{id}", "id")).andExpect(status().isOk());
+		mockMvc.perform(delete("/orgs/{id}", "id")).andExpect(status().isOk());
 
 	}
 
 	@Test
-	@DisplayName("DELETE /organization/1 - Not Found")
+	@DisplayName("DELETE /orgs/1 - Not Found")
 	void testDeleteOrganizationNotFound() throws Exception {
 		doReturn(Optional.empty()).when(service).findById("id");
-		mockMvc.perform(delete("/organization/{id}", "id")).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/orgs/{id}", "id")).andExpect(status().isNotFound());
 	}
 
 	private static String asJsonString(final Object obj) {

@@ -29,7 +29,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 	public Optional<OrganizationDTO> findById(String id) {
 		Optional<OrganizationDTO> dto= Optional.empty();
 		
-		Optional<Organization> organization = organizationRepository.findById(UUID.fromString(id));
+		Optional<Organization> organization = organizationRepository.findByUuid(UUID.fromString(id));
 		
 		if (organization.isPresent()) {
 			return ObjectMapperUtils.map(organization.get(), OrganizationDTO.class);
@@ -46,7 +46,6 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	@Override
 	public OrganizationDTO save(OrganizationDTO dto) {
-		dto.setId(null);
 		Optional<Organization> organization = ObjectMapperUtils.map(dto, Organization.class);
 		Optional<OrganizationDTO> organizationDTO = Optional.empty();
 		if(organization.isPresent()) {

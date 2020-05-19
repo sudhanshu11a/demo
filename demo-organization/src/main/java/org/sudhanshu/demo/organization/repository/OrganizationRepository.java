@@ -3,6 +3,7 @@
  */
 package org.sudhanshu.demo.organization.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,7 @@ import org.sudhanshu.demo.organization.entity.Organization;
  *
  */
 @Repository
-public interface OrganizationRepository extends JpaRepository<Organization, UUID> {
+public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
+	Optional<Organization> findByUuid(UUID uuid);
 }
