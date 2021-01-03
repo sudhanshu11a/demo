@@ -13,6 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
+ * for localhost use the url : http://localhost:9092/swagger-ui.html
  * @author Sudhanshu Sharma
  *
  */

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.sudhanshu.demo.organization.service;
 
 import java.util.List;
@@ -35,7 +32,7 @@ public interface OrganizationService {
 	 * @param organization		The organization to be save
 	 * @return					The saved organization 
 	 */
-	OrganizationDTO save(OrganizationDTO organization);
+	Optional<OrganizationDTO> save(OrganizationDTO organization);
 
 	/**
 	 * Update the specified organization, identified by its ID.

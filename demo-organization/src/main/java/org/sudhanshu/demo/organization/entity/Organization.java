@@ -29,7 +29,7 @@ public class Organization extends BaseEntity {
 	
 	/**
 	 * @param id
-	 * @param organizationName
+	 * @param name
 	 * @param createdDate
 	 * @param createdBy
 	 * @param modifiedDate

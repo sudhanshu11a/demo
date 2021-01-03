@@ -1,12 +1,11 @@
-/**
- * 
- */
 package org.sudhanshu.demo.organization.service.impl;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sudhanshu.demo.organization.dto.OrganizationDTO;
@@ -22,54 +21,65 @@ import org.sudhanshu.demo.organization.utils.ObjectMapperUtils;
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
 
-	@Autowired
-	OrganizationRepository organizationRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationServiceImpl.class);
 
-	@Override
-	public Optional<OrganizationDTO> findById(String id) {
-		Optional<OrganizationDTO> dto= Optional.empty();
-		
-		Optional<Organization> organization = organizationRepository.findById(UUID.fromString(id));
-		
-		if (organization.isPresent()) {
-			return ObjectMapperUtils.map(organization.get(), OrganizationDTO.class);
-		} 
-		
-		return dto;
-	}
+    @Autowired
+    OrganizationRepository organizationRepository;
 
-	@Override
-	public List<OrganizationDTO> findAll() {
-		List<Organization> organizations = organizationRepository.findAll();
-		return ObjectMapperUtils.mapAll(organizations, OrganizationDTO.class);
-	}
+    @Override
+    public Optional<OrganizationDTO> findById(String id) {
+        Optional<OrganizationDTO> dto = Optional.empty();
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            LOGGER.error("Exception in findById " + id + " with Exception " + ex.getMessage());
+            return dto;
+        }
+        Optional<Organization> organization = organizationRepository.findById(uuid);
 
-	@Override
-	public OrganizationDTO save(OrganizationDTO dto) {
-		dto.setId(null);
-		Optional<Organization> organization = ObjectMapperUtils.map(dto, Organization.class);
-		Optional<OrganizationDTO> organizationDTO = Optional.empty();
-		if(organization.isPresent()) {
-			Organization entity = organization.get();
-			entity.setActive(true);
-			entity.setCreatedBy(1l);
-			entity = organizationRepository.saveAndFlush(entity);
-			organizationDTO = ObjectMapperUtils.map(entity, OrganizationDTO.class);
-		}
-		return organizationDTO.isPresent()?organizationDTO.get():null;
-	}
+        if (organization.isPresent()) {
+            return ObjectMapperUtils.map(organization.get(), OrganizationDTO.class);
+        }
 
-	@Override
-	public boolean update(OrganizationDTO organization) {
-		//OrganizationDTO organizationDTO1 = new OrganizationDTO();
-		//organizationDTO1.setName("Suranshu");
-		return true;
-	}
+        return dto;
+    }
 
-	@Override
-	public boolean delete(String organizationId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public List<OrganizationDTO> findAll() {
+        List<Organization> organizations = organizationRepository.findAll();
+        return ObjectMapperUtils.mapAll(organizations, OrganizationDTO.class);
+    }
+
+    @Override
+    public Optional<OrganizationDTO> save(OrganizationDTO dto) {
+        dto.setId(null);
+        Optional<Organization> organization = ObjectMapperUtils.map(dto, Organization.class);
+        Optional<OrganizationDTO> organizationDTO = Optional.empty();
+        if (organization.isPresent()) {
+            Organization entity = organization.get();
+            entity.setActive(true);
+            entity.setCreatedBy(1L);
+            entity = organizationRepository.saveAndFlush(entity);
+            organizationDTO = ObjectMapperUtils.map(entity, OrganizationDTO.class);
+        }
+        return organizationDTO;
+    }
+
+    @Override
+    public boolean update(OrganizationDTO organization) {
+        Optional<OrganizationDTO> existingOrganization = findById(organization.getId());
+        return existingOrganization.map(o -> {
+            LOGGER.info("Organization ID {} exists", o.getId());
+            o.setOrgName(organization.getOrgName());
+            return true;
+        }).orElse(false);
+    }
+
+    @Override
+    public boolean delete(String organizationId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }

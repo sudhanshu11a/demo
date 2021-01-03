@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.sudhanshu.demo.organization.rest;
 
 import java.net.URI;
@@ -32,97 +29,94 @@ import org.sudhanshu.demo.organization.service.OrganizationService;
 @RequestMapping(path = "/orgs")
 public class OrganizationController {
 
-	static final Logger logger = LoggerFactory.getLogger(OrganizationController.class);
+    static final Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
-	@Autowired
-	private OrganizationService organizationService;
+    @Autowired
+    private OrganizationService organizationService;
 
-	@GetMapping("/{orgId}")
-	public ResponseEntity<?> getOrganizationName(@PathVariable String orgId) {
-		return organizationService.findById(orgId).map(organization -> {
-			try {
-				return ResponseEntity.ok().location(new URI("/orgs/" + orgId)).body(organization);
-			} catch (URISyntaxException e) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-			}
-		}).orElse(ResponseEntity.notFound().build());
-	}
+    @GetMapping("/{orgId}")
+    public ResponseEntity<?> getOrganizationName(@PathVariable String orgId) {
+        return organizationService.findById(orgId).map(organization -> {
+            try {
+                return ResponseEntity.ok().location(new URI("/orgs/" + orgId)).body(organization);
+            } catch (URISyntaxException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }).orElse(ResponseEntity.noContent().build());
+    }
 
-	@GetMapping()
-	public ResponseEntity<?> getAllOrganizationName() {
-		List<OrganizationDTO> organizations =  organizationService.findAll();
-		
-		try {
-			return ResponseEntity.ok().location(new URI("/orgs")).body(organizations);
-		} catch (URISyntaxException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-	
-	@PostMapping()
-	public ResponseEntity<OrganizationDTO> saveOrganization(@RequestBody OrganizationDTO organization) {
-		logger.info("Creating new Organization with name {} ", organization.getOrgName());
+    @GetMapping()
+    public ResponseEntity<?> getAllOrganizationName() {
+        List<OrganizationDTO> organizations = organizationService.findAll();
 
-		// Create the new Organization
-		OrganizationDTO newOrganization = organizationService.save(organization);
+        try {
+            return ResponseEntity.ok().location(new URI("/orgs")).body(organizations);
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-		try {
-			return ResponseEntity.created(new URI("/organization/" + newOrganization.getOrgName())).body(newOrganization);
-		} catch (URISyntaxException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
+    @PostMapping()
+    public ResponseEntity<OrganizationDTO> saveOrganization(@RequestBody OrganizationDTO organization) {
+        logger.info("Creating new Organization with name {} ", organization.getOrgName());
 
-	}
+        // Create the new Organization
 
-	/**
-	 * Update the organization with the specified ID
-	 * 
-	 * @param newOrganization		Organization details  
-	 * @param id					organization ID
-	 * @return
-	 */
-	@PutMapping("{id}")
-	public ResponseEntity<?> updateOrganization(@RequestBody OrganizationDTO newOrganization, @PathVariable String id) {
-		logger.info("Organization ID {} is updating.", id);
+        try {
+            Optional<OrganizationDTO> newOrganization = organizationService.save(organization);
+            if(newOrganization.isPresent()){
+                return ResponseEntity.created(new URI("/organization/" + newOrganization.get().getOrgName())).body(newOrganization.get());
+            }else{
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
-		Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
+    }
 
-		return existingOrganization.map(o -> {
-			logger.info("Organization ID {} exists", id);
-			o.setOrgName(newOrganization.getOrgName());
+    /**
+     * Update the organization with the specified ID
+     *
+     * @param newOrganization        Organization details
+     * @param id                    organization ID
+     * @return      New Organization details
+     */
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateOrganization(@RequestBody OrganizationDTO newOrganization, @PathVariable String id) {
+        logger.info("Organization ID {} is updating.", id);
+        newOrganization.setId(id);
+        if (organizationService.update(newOrganization)) {
+            //update the organization and return a OK response
+            return ResponseEntity.ok().body(newOrganization);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-			if (organizationService.update(o)) {
-				//update the organization and return a OK response
-				return ResponseEntity.ok().body(o);
-			} else {
-				return ResponseEntity.notFound().build();
-			}
-		}).orElse(ResponseEntity.notFound().build());
-	}
-	
-	/**
-	 * Delete the organization with the specified ID.
-	 * 
-	 * @param id		The Id of the organization to delete
-	 * @return			A responseEntity with one of the following status code:
-	 * 					200 OK if the delete was successful 
-	 * 					404 Not Found if the the organization with the specified Id not found
-	 * 					500 Internal Server Error if the error occurs during deletion
-	 */
-	@DeleteMapping("{id}")
-	public ResponseEntity<?> deleteOrganization(@PathVariable String id){
-		logger.info("Deleting the organization with ID : {} ", id);
-		
-		//Get the existing Organization 
-		Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
-		
-		return existingOrganization.map(org -> {
-			if(organizationService.delete(org.getId())) {
-				return ResponseEntity.ok().build();
-			}else {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-			}
-		}).orElse(ResponseEntity.notFound().build());
-	}
+    /**
+     * Delete the organization with the specified ID.
+     *
+     * @param id        The Id of the organization to delete
+     * @return A responseEntity with one of the following status code:
+     * 					200 OK if the delete was successful
+     * 					404 Not Found if the the organization with the specified Id not found
+     * 					500 Internal Server Error if the error occurs during deletion
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteOrganization(@PathVariable String id) {
+        logger.info("Deleting the organization with ID : {} ", id);
+
+        //Get the existing Organization
+        Optional<OrganizationDTO> existingOrganization = organizationService.findById(id);
+
+        return existingOrganization.map(org -> {
+            if (organizationService.delete(org.getId())) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }).orElse(ResponseEntity.notFound().build());
+    }
 
 }
