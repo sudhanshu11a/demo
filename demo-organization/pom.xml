@@ -20,7 +20,7 @@
 		<spring-cloud.version>Hoxton.M3</spring-cloud.version>
 		<modelmapper.version>2.3.0</modelmapper.version>
 		<springfox.swagger2.version>2.9.2</springfox.swagger2.version>
-		<jasypt.version>2.1.2</jasypt.version>
+		<jasypt.version>3.0.3</jasypt.version>
 	</properties>
 
 	<dependencies>

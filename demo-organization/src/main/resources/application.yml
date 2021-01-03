@@ -15,6 +15,10 @@ logging:
 spring:
   application:
     name: organization-service
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/demo_orgniazation?allowPublicKeyRetrieval=true&useSSL=false
@@ -35,3 +39,12 @@ spring:
   devtools:
     livereload:
       enabled: false
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    key-obtention-iterations: 1000
+    pool-size: 1
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    string-output-type: base64
