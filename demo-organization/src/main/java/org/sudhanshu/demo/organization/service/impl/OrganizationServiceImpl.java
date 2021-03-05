@@ -67,13 +67,20 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public boolean update(OrganizationDTO organization) {
-        Optional<OrganizationDTO> existingOrganization = findById(organization.getId());
-        return existingOrganization.map(o -> {
-            LOGGER.info("Organization ID {} exists", o.getId());
-            o.setOrgName(organization.getOrgName());
-            return true;
-        }).orElse(false);
+    public boolean update(OrganizationDTO dto) {
+        try{
+            Organization organization = organizationRepository.getOne(UUID.fromString(dto.getId()));
+            if(organization!=null){
+                LOGGER.info("Organization ID {} exists", dto.getId());
+                organization.setOrgName(dto.getOrgName());
+                organization.setDisplayName(dto.getDisplayName());
+                organizationRepository.save(organization);
+                return true;
+            }
+        }catch (RuntimeException ex){
+            LOGGER.error(ex.getMessage(), ex);
+        }
+        return false;
     }
 
     @Override
