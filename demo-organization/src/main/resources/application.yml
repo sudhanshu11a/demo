@@ -18,7 +18,7 @@ spring:
   cloud:
     loadbalancer:
       ribbon:
-        enabled: false
+        enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/demo_orgniazation?allowPublicKeyRetrieval=true&useSSL=false
