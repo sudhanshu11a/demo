@@ -1,6 +1,8 @@
 spring:
   application:
     name: gateway-service
+  banner:
+    location: banner.txt
 server:
   port: 8080
 
@@ -13,6 +15,6 @@ eureka:
 zuul:
   routes:
     user-service:
-     serviceId:user-service
+      serviceId:user-service
     organization-service:
      service-id: organization-service
