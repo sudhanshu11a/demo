@@ -1,4 +1,4 @@
-package org.sudhanshu.demo.demoauth.config;
+package org.sudhanshu.demo.gateway.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.sudhanshu.demo.demoauth.filter.JwtRequestFilter;
-import org.sudhanshu.demo.demoauth.services.MyUserDetailsService;
+import org.sudhanshu.demo.gateway.filter.JwtRequestFilter;
+import org.sudhanshu.demo.gateway.services.MyUserDetailsService;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception{
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/token/*","/users/signup").permitAll()
+                .antMatchers("/token/*", "/users/signup", "/post-service").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
