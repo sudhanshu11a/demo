@@ -2,54 +2,107 @@ package org.sudhanshu.demo.posts.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.sudhanshu.demo.posts.dto.ResultsPost;
+import org.sudhanshu.demo.posts.dto.PostDTO;
+import org.sudhanshu.demo.posts.service.PostService;
 
-import java.util.Arrays;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:8080","http://localhost:4200"})
+@RequestMapping(path = "/post")
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:4200"})
 public class PostController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
-    private ResultsPost resultsPost = new ResultsPost("1", "slug", "", "Heading",
-            "SubHeading", "Meta", "Body..." );
-
-    @GetMapping()
-    public ResponseEntity<?> getAllPosts(){
-     //ResultsPost resultsPost = new ResultsPost("1", "slug", "", "Heading",
-     //        "SubHeading", "Meta", "Body..." );
-     return ResponseEntity.ok(Arrays.asList(resultsPost));
-    }
+    @Autowired
+    PostService postService;
 
     @GetMapping("/{slug}")
-    public ResponseEntity<?> getPostBySlug(@PathVariable String slug, @RequestParam(required = false) String findBy){
-        //ResultsPost resultsPost = new ResultsPost("1", "slug", "", "Heading",
-        //        "SubHeading", "Meta", "Body..." );
-        return ResponseEntity.ok(resultsPost);
+    public ResponseEntity<?> getPostData(@PathVariable String slug) {
+        return postService.findBySlug(slug).map(post -> {
+            return ResponseEntity.ok(post);
+        }).orElse(ResponseEntity.noContent().build());
     }
 
-    @PostMapping("/save-post")
-    public ResponseEntity<ResultsPost> saveOrganization(@RequestBody ResultsPost postDto) {
-        LOGGER.info("Creating new Post with name {} ", postDto.getHeading());
+    @GetMapping()
+    public ResponseEntity<?> getAllPostName() {
+        LOGGER.info("Initiating request for fetching all Posts");
+        List<PostDTO> posts = postService.findAll();
+        try {
+            return ResponseEntity.ok().location(new URI("/post")).body(posts);
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-        // Create the new Organization
-        return ResponseEntity.ok(resultsPost);
+    @PostMapping("")
+    public ResponseEntity<PostDTO> savePost(@RequestBody PostDTO post) {
+        LOGGER.info("Creating new post with name {} ", post.getHeading());
 
-//        try {
-//            //Optional<ResultsPost> resultsPost = organizationService.save(postDto);
-//            if(resultsPost.isPresent()){
-//                return ResponseEntity.created(new URI("/post/" + newOrganization.get().getOrgName())).body(newOrganization.get());
-//            }else{
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//            }
-//        } catch (URISyntaxException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
+        // Create the new Post
 
+        try {
+            Optional<PostDTO> newPost = postService.save(post);
+            if (newPost.isPresent()) {
+                return ResponseEntity.created(new URI("/post/" + newPost.get().getSlug())).body(newPost.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } catch (URISyntaxException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
+    }
+
+    /**
+     * Update the Post with the specified ID
+     *
+     * @param newPost Post details
+     * @param id      Post ID
+     * @return New Post details
+     */
+    @PutMapping("{id}")
+    public ResponseEntity<?> updatePost(@RequestBody PostDTO newPost, @PathVariable String id) {
+        LOGGER.info("Post ID {} is updating.", id);
+        newPost.setId(id);
+        if (postService.update(newPost)) {
+            //update the Post and return a OK response
+            return ResponseEntity.ok().body(newPost);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Delete the Post with the specified ID.
+     *
+     * @param id The Id of the Post to delete
+     * @return A responseEntity with one of the following status code:
+     * 200 OK if the delete was successful
+     * 404 Not Found if the the Post with the specified Id not found
+     * 500 Internal Server Error if the error occurs during deletion
+     */
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deletePost(@PathVariable String id) {
+        LOGGER.info("Deleting the post with ID : {} ", id);
+
+        //Get the existing Post
+        Optional<PostDTO> existingPost = postService.findById(id);
+
+        return existingPost.map(org -> {
+            if (postService.delete(org.getId())) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }).orElse(ResponseEntity.notFound().build());
     }
 
 

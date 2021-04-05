@@ -20,3 +20,17 @@ zuul:
     organization-service:
       path: /organization-service/**
       serviceid: organization-service
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 120000
+        timeout:
+          enabled: false
+
+niws:
+  loadbalancer:
+    availabilityFilteringRule:
+      activeConnectionsLimit: 2147483647

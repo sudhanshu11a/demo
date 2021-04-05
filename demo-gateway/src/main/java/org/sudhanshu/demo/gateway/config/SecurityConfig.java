@@ -11,6 +11,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.sudhanshu.demo.gateway.filter.JwtRequestFilter;
 import org.sudhanshu.demo.gateway.services.MyUserDetailsService;
 
@@ -37,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception{
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/token/*", "/users/signup", "/post-service").permitAll()
+                .antMatchers("/**").permitAll()
+                //.antMatchers("/token/*", "/users/signup", "/post-service/*").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -48,5 +52,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
     }
 }

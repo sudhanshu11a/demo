@@ -34,6 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse
             , FilterChain filterChain) throws ServletException, IOException {
+        LOGGER.info("Gateway Filter Started for " + httpServletRequest.getRequestURI());
         final String authorizationHeader = httpServletRequest.getHeader(AUTHORISATION_HEADER);
         String username = null;
 
@@ -51,5 +52,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+        LOGGER.info("Gateway Filter Ends for " + httpServletRequest.getRequestURI());
     }
 }
