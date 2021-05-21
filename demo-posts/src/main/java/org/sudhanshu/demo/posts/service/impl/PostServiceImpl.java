@@ -100,6 +100,7 @@ public class PostServiceImpl implements PostService {
                 LOGGER.info("Post ID {} exists", dto.getId());
                 post.setHeading(dto.getHeading());
                 post.setSubHeading(dto.getSubHeading());
+                post.setBackgroundImage(dto.getBackgroundImage());
                 post.setMeta(dto.getMeta());
                 post.setBody(dto.getBody());
                 postRepository.save(post);

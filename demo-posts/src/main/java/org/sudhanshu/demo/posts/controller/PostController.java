@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/post")
-@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:4200"})
+@CrossOrigin
 public class PostController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PostController.class);
@@ -24,14 +24,14 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @GetMapping("/{slug}")
+    @GetMapping("/read/{slug}")
     public ResponseEntity<?> getPostData(@PathVariable String slug) {
         return postService.findBySlug(slug).map(post -> {
             return ResponseEntity.ok(post);
         }).orElse(ResponseEntity.noContent().build());
     }
 
-    @GetMapping()
+    @GetMapping("/read/all")
     public ResponseEntity<?> getAllPostName() {
         LOGGER.info("Initiating request for fetching all Posts");
         List<PostDTO> posts = postService.findAll();
@@ -42,7 +42,7 @@ public class PostController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping("/save")
     public ResponseEntity<PostDTO> savePost(@RequestBody PostDTO post) {
         LOGGER.info("Creating new post with name {} ", post.getHeading());
 
@@ -68,7 +68,7 @@ public class PostController {
      * @param id      Post ID
      * @return New Post details
      */
-    @PutMapping("{id}")
+    @PutMapping("/save/{id}")
     public ResponseEntity<?> updatePost(@RequestBody PostDTO newPost, @PathVariable String id) {
         LOGGER.info("Post ID {} is updating.", id);
         newPost.setId(id);
@@ -89,7 +89,7 @@ public class PostController {
      * 404 Not Found if the the Post with the specified Id not found
      * 500 Internal Server Error if the error occurs during deletion
      */
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable String id) {
         LOGGER.info("Deleting the post with ID : {} ", id);
 

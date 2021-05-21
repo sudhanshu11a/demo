@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: gateway-service
+  banner:
+    location: banner/banner.txt
+server:
+  port: 80
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://104.131.160.90:8761/eureka/
+      fetchRegistry: true
+
+
+ribbon:
+  ConnectTimeout: 60000
+  ReadTimeout: 60000
+  eureka:
+    enabled: true
+zuul:
+  host:
+    socket-timeout-millis: 120000
+    connect-timeout-millis: 120000
+
+hhystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+niws:
+  loadbalancer:
+    availabilityFilteringRule:
+      activeConnectionsLimit: 2147483647

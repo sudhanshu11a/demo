@@ -4,7 +4,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://104.131.160.90:8761/eureka/
 
 logging:
   level:
@@ -21,16 +21,16 @@ spring:
         enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/demo_post1?createDatabaseIfNotExist=false&allowPublicKeyRetrieval=true&useSSL=false
-    username: ENC(NWQUYyNmuP7u9CyiNcjOLMp7HNTDHKrk)
-    password: ENC(r1V6GiDXIJ13B5ZltjhMHRIWm+wtRDRo)
+    url: jdbc:mysql://db-mysql-blr1-27405-do-user-9204288-0.b.db.ondigitalocean.com:25060/blogpostdb
+    username: ENC(SF8jz6e7NeQDjEjgqDqywG5Qvdg0aRHM)
+    password: ENC(PWPlcJ6eiSLJdFwJl7foTK4DSBKscRAwB5bo+43Pe5I=)
   jpa:
     generate-ddl: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: true
     open-in-view: false
 

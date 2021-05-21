@@ -21,7 +21,7 @@ import org.sudhanshu.demo.gateway.services.MyUserDetailsService;
  */
 @RestController
 @RequestMapping(path = "/token")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class AuthenticationController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);

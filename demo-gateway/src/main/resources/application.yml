@@ -11,20 +11,23 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
       fetchRegistry: true
-# Test service mapping
+
 zuul:
-  routes:
-    user-service:
-      path: /user-service/**
-      serviceId: user-service
-    organization-service:
-      path: /organization-service/**
-      serviceid: organization-service
+  ribbon:
+    ConnectTimeout: 60000
+    ReadTimeout: 60000
+    eager-load:
+      enabled: true
+  host:
+    socket-timeout-millis: 120000
+    connect-timeout-millis: 120000
+
 hystrix:
   command:
     default:
       execution:
         isolation:
+          strategy: THREAD
           thread:
             timeoutInMilliseconds: 120000
         timeout:
